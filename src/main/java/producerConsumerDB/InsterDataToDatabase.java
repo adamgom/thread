@@ -36,31 +36,31 @@ public class InsterDataToDatabase implements Runnable {
 				DBTDSLock.unlock();
 			}
 		}
+		Engine.getInstance().setStartButtonActive();
 	}
 	
 	private void addDataToDatabase() {
-		try (Connection connection = DriverManager.getConnection(Config.DBURL, Config.USER, Config.PASSWORD);) {
-			connection.setCatalog(Config.DBNAME);
-			try (PreparedStatement preparedStatement = connection.prepareStatement(insertData);){
-	    		connection.setAutoCommit(false);
+//		try (Connection connection = DriverManager.getConnection(Config.DBURL, Config.USER, Config.PASSWORD);) {
+//			connection.setCatalog(Config.DBNAME);
+//			try (PreparedStatement preparedStatement = connection.prepareStatement(insertData);){
+//	    		connection.setAutoCommit(false);
 	    		int tempLoopEnd = dbTDS.getTempBDBuffer().size(); 
 	    		for (int i = 0 ; i < tempLoopEnd ; i ++) {
-	    			preparedStatement.setInt(1, dbTDS.getTempBDBuffer().get(0).getConsumerID());
-	    			preparedStatement.setInt(2, (int)dbTDS.getTempBDBuffer().get(0).getConsumerWorkDate().getTime());
-	    			preparedStatement.setString(3, dbTDS.getTempBDBuffer().get(0).getDataNo());
-	    			preparedStatement.executeUpdate();
-	    			connection.commit();
+//	    			preparedStatement.setInt(1, dbTDS.getTempBDBuffer().get(0).getConsumerID());
+//	    			preparedStatement.setInt(2, (int)dbTDS.getTempBDBuffer().get(0).getConsumerWorkDate().getTime());
+//	    			preparedStatement.setString(3, dbTDS.getTempBDBuffer().get(0).getDataNo());
+//	    			preparedStatement.executeUpdate();
+//	    			connection.commit();
 	    			dbTDS.getTempBDBuffer().remove(0);
 	    		}
-	    		System.out.println("... IDTD method - data passed");
-			} catch (SQLException e) {
-				System.out.println("IDTD method - commit error, rollback: ");
-				connection.rollback();
-				e.printStackTrace();
-    		}
-		} catch (SQLException e) {
-			System.out.println("IDTD method - connection error: ");
-			e.printStackTrace();
-		} 
+//			} catch (SQLException e) {
+//				System.out.print("IDTD method - commit error, rollback: ");
+//				connection.rollback();
+//				e.printStackTrace();
+//    		}
+//		} catch (SQLException e) {
+//			System.out.print("IDTD method - connection error: ");
+//			e.printStackTrace();
+//		} 
 	}
 }

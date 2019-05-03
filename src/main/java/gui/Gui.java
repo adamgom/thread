@@ -15,7 +15,7 @@ public class Gui {
 		this.primaryStage = primaryStage;
 		this.fxmlLoader = new FXMLLoader(this.getClass().getResource("Scene.fxml"));
 		this.fxmlLoader.setController(Engine.getInstance().getController());
-		this.scene = new Scene(fxmlLoader.load(), 600, 700);
+		this.scene = new Scene(fxmlLoader.load());
 		this.primaryStage.setScene(scene);
 		this.primaryStage.show();
 	}

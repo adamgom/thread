@@ -1,27 +1,3 @@
-//package main;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import ConsumerProducer.Engine;
-//
-//public class Buffer {
-//	private List<String> buffer;
-//	
-//	public Buffer() {
-//		this.buffer = new ArrayList<String>();
-//	}
-//	
-//	public void addToBuffer(String data) {
-//		this.buffer.add(data);
-//	}
-//	
-//	public List<String> getBuffer() {
-//		return buffer;
-//	}
-//}
-
-
 package main;
 
 //Circular Queue
@@ -40,9 +16,9 @@ public class Buffer {
 	
 	public void add(String input) {
 		buffer[back++] = input;
-		if (bufferSize() == buffer.length - 1 || back == front) enlargeBuffer();
+		if (bufferSize() == buffer.length - 1 || back == front) changeBuffer(true);;
 		if (back == buffer.length) back = 0;
-		passDataToGUI(input);
+		Engine.getInstance().setBufferDataToGUI(front, back, input, bufferSize(), buffer, true);
 	}
 	
 	public String get() {
@@ -50,8 +26,8 @@ public class Buffer {
 		String removed = buffer[front];
 		buffer[front++] = null;
 		if (front == buffer.length) front = 0;
-		if (bufferSize() < (buffer.length / 4) && buffer.length > initalCapacity) decreaseBuffer();
-		passDataToGUI(removed);
+		if (bufferSize() < (buffer.length / 4) && buffer.length > initalCapacity) changeBuffer(false);;
+		Engine.getInstance().setBufferDataToGUI(front, back, removed, bufferSize(), buffer, false);
 		return removed;
 	}
 	
@@ -59,17 +35,14 @@ public class Buffer {
 		if (bufferSize() == 0 ) return null;
 		return buffer[front];
 	}
-	
-	private void enlargeBuffer() {
+
+	private void changeBuffer(boolean enlarge) {
 		int size = bufferSize();
-		buffer = traverseBuffer(new String[buffer.length * 2]);
-		front = 0;
-		back = size;
-	};
-	
-	private void decreaseBuffer() {
-		int size = bufferSize();
-		buffer = traverseBuffer(new String[Math.max(buffer.length / 2, initalCapacity)]);
+		if (enlarge) {
+			buffer = traverseBuffer(new String[buffer.length * 2]);
+		} else {
+			buffer = traverseBuffer(new String[Math.max(buffer.length / 2, initalCapacity)]);
+		}
 		front = 0;
 		back = size;
 	}
@@ -90,9 +63,5 @@ public class Buffer {
 		} else {
 			return back + buffer.length - front;
 		}
-	}
-	
-	private void passDataToGUI(String data) {
-		Engine.getInstance().setBufferDataToGUI(front, back, data, bufferSize(), buffer);		
 	}
 }

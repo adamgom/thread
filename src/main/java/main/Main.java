@@ -1,30 +1,3 @@
-//package main;
-//
-////import producerConsumerDB.DBEngine;
-////import producerConsumerDB.DBTemporaryDataStorage;
-//
-//public class Main {
-//
-////	static InfoCollector infoCollector;
-////	static DBTemporaryDataStorage dbTemporaryDataStorege;
-//	
-//	public static void main(String[] args) {
-////		infoCollector = new InfoCollector();
-////		dbTemporaryDataStorege = new DBTemporaryDataStorage();
-//		
-////		int noOfConsumers = 20;
-////		int noOfData = 200;
-////		String endOfFile = "End of file";
-//		
-////		DBEngine.setInstance(infoCollector, dbTemporaryDataStorege);
-//		Engine.setInstance();
-////		Engine.getInstance().startProducer();
-////		Engine.getInstance().startConsumers();
-//	}
-//}
-//
-
-
 package main;
 
 import gui.Gui;
