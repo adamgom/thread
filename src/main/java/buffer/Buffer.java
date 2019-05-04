@@ -1,24 +1,28 @@
-package main;
+package buffer;
 
-//Circular Queue
+import main.Engine;
+
+// Array circular queue
 
 public class Buffer {
 	private String[] buffer;
 	private int front;
 	private int back;
 	private final int initalCapacity;
+	private double loadFactor;
 	
 	public Buffer(int capacity) {
 		buffer = new String[this.initalCapacity = capacity];
 		back = 0;
 		front = 0;
+		loadFactor = 0.8;
 	}
 	
 	public void add(String input) {
 		buffer[back++] = input;
-		if (bufferSize() == buffer.length - 1 || back == front) changeBuffer(true);;
+		if (bufferSize() >= buffer.length * loadFactor) changeBuffer(true);;
 		if (back == buffer.length) back = 0;
-		Engine.getInstance().setBufferDataToGUI(front, back, input, bufferSize(), buffer, true);
+		Engine.getInstance().setBufferDataToGUI(front, back, input, bufferSize(), buffer, true, loadFactor);
 	}
 	
 	public String get() {
@@ -26,8 +30,8 @@ public class Buffer {
 		String removed = buffer[front];
 		buffer[front++] = null;
 		if (front == buffer.length) front = 0;
-		if (bufferSize() < (buffer.length / 4) && buffer.length > initalCapacity) changeBuffer(false);;
-		Engine.getInstance().setBufferDataToGUI(front, back, removed, bufferSize(), buffer, false);
+		if (bufferSize() < buffer.length / 2 && buffer.length > initalCapacity) changeBuffer(false);
+		Engine.getInstance().setBufferDataToGUI(front, back, removed, bufferSize(), buffer, false, loadFactor);
 		return removed;
 	}
 	
@@ -41,7 +45,7 @@ public class Buffer {
 		if (enlarge) {
 			buffer = traverseBuffer(new String[buffer.length * 2]);
 		} else {
-			buffer = traverseBuffer(new String[Math.max(buffer.length / 2, initalCapacity)]);
+			buffer = traverseBuffer(new String[Math.max((int)(buffer.length / 2), initalCapacity)]);
 		}
 		front = 0;
 		back = size;

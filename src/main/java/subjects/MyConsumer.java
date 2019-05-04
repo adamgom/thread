@@ -3,11 +3,12 @@ package subjects;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
+
+import buffer.Buffer;
+import buffer.InfoCollector;
 import main.Bean;
-import main.Buffer;
 import main.Config;
 import main.Engine;
-import main.InfoCollector;
 
 public class MyConsumer implements Runnable {
 	private boolean first;

@@ -62,6 +62,13 @@
                            </children>
                         </HBox>
                         <Separator />
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label contentDisplay="CENTER" prefWidth="80.0" text="Resize limit" />
+                              <Label fx:id="resizeLimit" text="---" />
+                           </children>
+                        </HBox>
+                        <Separator />
                         <HBox>
                            <children>
                               <Label contentDisplay="CENTER" prefWidth="80.0" text="Size" />

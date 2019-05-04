@@ -1,7 +1,9 @@
-package main;
+package buffer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import main.Bean;
 
 public class InfoCollector {
 	private List<Bean> consumerBehaviour;

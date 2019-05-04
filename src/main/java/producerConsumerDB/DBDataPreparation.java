@@ -2,20 +2,17 @@ package producerConsumerDB;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import buffer.InfoCollector;
+import dbTempDataStorage.DBTempDataStorage;
 import main.Engine;
-import main.InfoCollector;
 
 public class DBDataPreparation implements Runnable {
 	private InfoCollector infoCollector;
-	private DBTemporaryDataStorage dbTDS;
+	private DBTempDataStorage dbTDS;
 	private ReentrantLock ICLock;
 	private ReentrantLock DBTDSLock;
 	
-	public DBDataPreparation(
-			InfoCollector infoCollector,
-			DBTemporaryDataStorage dbTemporaryDataStorege,
-			ReentrantLock ICLock,
-			ReentrantLock DBTDSLock) {
+	public DBDataPreparation(InfoCollector infoCollector, DBTempDataStorage dbTemporaryDataStorege, ReentrantLock ICLock, ReentrantLock DBTDSLock) {
 		this.infoCollector = infoCollector;
 		this.dbTDS = dbTemporaryDataStorege;
 		this.ICLock = ICLock;
@@ -30,7 +27,6 @@ public class DBDataPreparation implements Runnable {
 					try {
 						DBTDSLock.lock();
 						passData(10);
-						Engine.getInstance().displayData();
 					} finally {
 						DBTDSLock.unlock();	
 					}
@@ -56,7 +52,7 @@ public class DBDataPreparation implements Runnable {
 		try {
 			ICLock.lock();
 			DBTDSLock.lock();
-			passData(infoCollector.getConsumerBehaviour().size()-1);
+			passData(infoCollector.getConsumerBehaviour().size());
 			Engine.getInstance().setDataPreparationDone();
 		} finally {
 			DBTDSLock.unlock();
@@ -67,7 +63,7 @@ public class DBDataPreparation implements Runnable {
 	
 	private void passData(int limit) {
 		for (int i = 0 ; i < limit ; i++) {
-			dbTDS.getTempBDBuffer().add(infoCollector.getConsumerBehaviour().get(0));
+			dbTDS.add(infoCollector.getConsumerBehaviour().get(0));
 			infoCollector.getConsumerBehaviour().remove(0);
 		}
 		dbTDS.setStorageReady(true);

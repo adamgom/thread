@@ -2,7 +2,8 @@ package subjects;
 
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
-import main.Buffer;
+
+import buffer.Buffer;
 import main.Config;
 
 public class MyProducer implements Runnable {

@@ -3,11 +3,12 @@ package main;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.locks.ReentrantLock;
+import buffer.Buffer;
+import buffer.InfoCollector;
+import dbTempDataStorage.DBTempDataStorage;
 import producerConsumerDB.DBCheck;
 import producerConsumerDB.DBCreateTable;
 import producerConsumerDB.DBDataPreparation;
-//import producerConsumerDB.DBTempDataPresentation;
-import producerConsumerDB.DBTemporaryDataStorage;
 import producerConsumerDB.InsterDataToDatabase;
 import subjects.MyConsumer;
 import subjects.MyProducer;
@@ -27,7 +28,7 @@ public class Engine {
 	private Buffer buffer;
 	private InfoCollector infoCollector;
 	private Controller controller;
-	private DBTemporaryDataStorage dbTemporaryDataStorege;
+	private DBTempDataStorage dbTempDataStorage;
 	private Thread dbDataPreparation;
 	private Thread producer;
 	private Thread[] consumers;
@@ -39,7 +40,7 @@ public class Engine {
 		dateFormat = new SimpleDateFormat(Config.dateFormatPattern);
 		fullDateFormat = new SimpleDateFormat(Config.fullDateFormatPattern);
 		infoCollector = new InfoCollector();
-		dbTemporaryDataStorege = new DBTemporaryDataStorage();
+		dbTempDataStorage = new DBTempDataStorage();
 		bufferLock = new ReentrantLock();
 		DBTDSLock = new ReentrantLock();
 		ICLock = new ReentrantLock();
@@ -60,24 +61,24 @@ public class Engine {
 	public void start(int initBufferSize, int noOfConsumers, int noOfData) {
 		consumerDone = false;
 		dataPreparationDone = false;
-		dbDataPreparation = new Thread(new DBDataPreparation(infoCollector, dbTemporaryDataStorege, ICLock, DBTDSLock));
-		insertDataToDatabase = new Thread(new InsterDataToDatabase(dbTemporaryDataStorege, DBTDSLock));
+		dbDataPreparation = new Thread(new DBDataPreparation(infoCollector, dbTempDataStorage, ICLock, DBTDSLock));
+		insertDataToDatabase = new Thread(new InsterDataToDatabase(dbTempDataStorage, DBTDSLock));
 		buffer = new Buffer(initBufferSize);
 		consumers = new Thread[noOfConsumers];
 		dbDataPreparation.start();
 		insertDataToDatabase.start();
-		producer = new Thread(new MyProducer(buffer, noOfData, bufferLock));
 		for (int i = 0 ; i < consumers.length ; i++ ) {
 			consumers[i] = new Thread(new MyConsumer(i, noOfConsumers, buffer, bufferLock, ICLock, infoCollector));
+			consumers[i].start();
 		}
-		for (int i = 0 ; i < consumers.length ; i++ ) consumers[i].start();
+		producer = new Thread(new MyProducer(buffer, noOfData, bufferLock));
 		producer.start();
 	}
 
-	public void setBufferDataToGUI(int front, int back, String input, int bufferSize, String[] buffer, boolean insert) {
+	public void setBufferDataToGUI(int front, int back, String input, int bufferSize, String[] buffer, boolean insert, double loadFactor) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				controller.setStatus(front, back, bufferSize, buffer, input);
+				controller.setStatus(front, back, bufferSize, buffer, input, loadFactor);
 				if (insert) {
 					controller.producerProgress();	
 				} else {
@@ -87,15 +88,15 @@ public class Engine {
 		});
 	}
 	
-	public void displayData() {
+	public void displayData(Bean bean) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				controller.displayData(dbTemporaryDataStorege);
+				controller.displayData(bean);
 			}
 		});	
 	}
 	
-	public void setStartButtonActive() {
+	public void setInputActive() {
 		Platform.runLater(new Runnable() {
 			public void run() {
 				controller.setInputsActive();
@@ -105,7 +106,6 @@ public class Engine {
 	
 	public void setDataPreparationDone() {
 		this.dataPreparationDone = true;
-		displayData();
 	}
 	
 	public void setConsumerDone() {

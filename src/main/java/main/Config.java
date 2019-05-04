@@ -4,6 +4,8 @@ public class Config {
 	public static final String dateFormatPattern = "mm:ss:SS";
 	public static final String fullDateFormatPattern = "dd.MM.YYYY HH:mm:ss";
 	public static final String EOD = "End of data";
+	public static final String BUFFERNULL = "---";
+	public static final String CONSUMERPREFIXNAME = "CONSUMER-";
 	
 	public static final String DBURL = "jdbc:mysql://localhost?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	public static final String USER = "codeme-user";
